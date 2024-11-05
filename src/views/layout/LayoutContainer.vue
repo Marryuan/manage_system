@@ -7,7 +7,7 @@ import {
   Crop,
   EditPen,
   SwitchButton,
-  CaretBottom
+  CaretBottom,
 } from '@element-plus/icons-vue'
 import avatar from '@/assets/default.png'
 import { useUserStore } from '@/stores/user'
@@ -21,12 +21,12 @@ onMounted(() => {
 })
 
 // 添加退出功能
-const onCommand = async (command) => {
+const onCommand = async command => {
   if (command === 'logout') {
     await ElMessageBox.confirm('你确认退出大事件吗？', '温馨提示', {
       type: 'warning',
       confirmButtonText: '确认',
-      cancelButtonText: '取消'
+      cancelButtonText: '取消',
     })
     userStore.removeToken()
     userStore.setUser({})
@@ -35,7 +35,6 @@ const onCommand = async (command) => {
     router.push(`/user/${command}`)
   }
 }
-
 </script>
 
 <template>
@@ -79,7 +78,11 @@ const onCommand = async (command) => {
     </el-aside>
     <el-container>
       <el-header>
-        <div>黑马程序员：<strong>{{ userStore.user.nickname || userStore.user.username }}</strong></div>
+        <div>
+          黑马程序员：<strong>{{
+            userStore.user.nickname || userStore.user.username
+          }}</strong>
+        </div>
         <el-dropdown placement="bottom-end">
           <span class="el-dropdown__box">
             <el-avatar :src="userStore.user.user_pic || avatar" />
@@ -96,9 +99,10 @@ const onCommand = async (command) => {
               <el-dropdown-item command="password" :icon="EditPen"
                 >重置密码</el-dropdown-item
               >
-              <el-dropdown-item command="logout" 
-              @click="onCommand"
-              :icon="SwitchButton"
+              <el-dropdown-item
+                command="logout"
+                @click="onCommand"
+                :icon="SwitchButton"
                 >退出登录</el-dropdown-item
               >
             </el-dropdown-menu>

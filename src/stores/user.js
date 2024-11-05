@@ -8,7 +8,7 @@ export const useUserStore = defineStore(
   () => {
     const token = ref('') // 定义 token
     const user = ref({})
-    const setUser = (obj) => (user.value = obj)
+    const setUser = obj => (user.value = obj)
 
     const setToken = t => (token.value = t) // 设置 token
     const getUser = async () => {
