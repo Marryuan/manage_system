@@ -2,14 +2,14 @@
 import { artGetChannelsService } from '@/api/article'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
-
+import { Delete, Edit } from '@element-plus/icons-vue'
 const channelList = ref([])
 const dialog = ref()
 
 const getChannelList = async () => {
   loading.value = true
   const res = await artGetChannelsService()
-  console.log(res.data.data)
+  console.log(res)
   channelList.value = res.data.data
   loading.value = false
 }
@@ -20,10 +20,10 @@ const onAddChannel = () => {
 }
 
 const onEditChannel = row => {
-    dialog.value.open({})
+  dialog.value.open({})
 }
 const onDelChannel = row => {
-   console.log(row)
+  console.log(row)
 }
 
 onMounted(() => {
@@ -40,7 +40,7 @@ const dialogVisible = ref(false)
 <template>
   <page-container title="文章分类">
     <template #extra>
-      <el-button type="primary"> 添加分类 </el-button>
+      <el-button type="primary" @click="onAddChannel"> 添加分类 </el-button>
     </template>
     <el-table v-loading="loading" :data="channelList" style="width: 100%">
       <el-table-column label="序号" width="100" type="index"> </el-table-column>
@@ -67,6 +67,8 @@ const dialogVisible = ref(false)
       <template #empty>
         <el-empty description="没有数据" />
       </template>
+
+      
     </el-table>
   </page-container>
 </template>
