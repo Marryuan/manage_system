@@ -3,6 +3,10 @@ import { artGetChannelsService } from '@/api/article'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
+import channelEdit from '../components/channelEdit.vue'
+import { artDelChannelService } from '@/api/article'
+import { ElMessage } from 'element-plus'
+
 const channelList = ref([])
 const dialog = ref()
 
@@ -20,10 +24,17 @@ const onAddChannel = () => {
 }
 
 const onEditChannel = row => {
-  dialog.value.open({})
+  dialog.value.open({ row })
 }
-const onDelChannel = row => {
-  console.log(row)
+const onDelChannel = async row => {
+  await ElMessageBox.confirm('你确认要取消么','温馨提示', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cancelButtonText: '取消'
+  })
+  await artDelChannelService(row.id)
+  ElMessage.success('删除成功')
+  getChannelList()
 }
 
 onMounted(() => {
@@ -35,6 +46,11 @@ const loading = ref(false)
 
 // 准备弹层
 const dialogVisible = ref(false)
+
+// 子传父
+const onSuccess = () => {
+  getChannelList()
+}
 </script>
 
 <template>
@@ -67,8 +83,8 @@ const dialogVisible = ref(false)
       <template #empty>
         <el-empty description="没有数据" />
       </template>
-
-      
     </el-table>
+
+    <channelEdit ref="dialog" @success="onSuccess"></channelEdit>
   </page-container>
 </template>
