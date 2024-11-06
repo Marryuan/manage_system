@@ -4,6 +4,7 @@ import { Edit, Delete } from '@element-plus/icons-vue'
 import ChannelSelect from '../components/ChannelSelect.vue'
 import { artGetListService } from '@/api/article'
 import { formatTime } from '@/utils/format'
+import ArticleEdit from '../components/ArticleEdit.vue'
 
 const articleList = ref([])
 const total = ref(0) // 默认总条数是0
@@ -11,12 +12,13 @@ const loading = ref(false)
 
 // 编辑
 const onEditArticle = row => {
-  console.log(row)
+  articleEditRef.value.open({ row })
 }
 
+const articleEditRef = ref()
 // 添加
 const onAddArticle = () => {
-  visibileDrawer.value = true
+  articleEditRef.value.open({})
 }
 
 // 删除
@@ -49,7 +51,6 @@ const params = ref({
 const getArticleList = async () => {
   loading.value = true
   const res = await artGetListService(params.value)
-  console.log('res', res)
   articleList.value = res.data.data
   total.value = res.data.total
   loading.value = false
@@ -65,6 +66,15 @@ const onSizeChange = size => {
 
 const onCurrentChange = page => {
   params.value.pagenum = page
+  getArticleList()
+}
+
+const onSuccess = type => {
+  if (type === 'add') {
+    // 如果是添加，需要跳转渲染最后一页，编辑直接渲染当前页
+    const lastPage = Math.ceil((total.value + 1) / params.value.pagesize)
+    params.value.pagenum = lastPage
+  }
   getArticleList()
 }
 </script>
@@ -132,7 +142,6 @@ const onCurrentChange = page => {
       v-model:current-page="params.pagenum"
       v-model:page-size="params.pagesize"
       :page-sizes="[1, 3, 5, 10]"
-      :size="size"
       :background="true"
       layout="jumper, total, sizes, prev, pager, next"
       :total="total"
@@ -140,5 +149,8 @@ const onCurrentChange = page => {
       @current-change="onCurrentChange"
       style="margin-top: 20px; justify-content: flex-end"
     />
+
+    <!-- 抽屉区域 -->
+    <ArticleEdit ref="articleEditRef" @success="onSuccess"></ArticleEdit>
   </page-container>
 </template>

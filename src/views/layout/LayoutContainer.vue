@@ -16,7 +16,7 @@ import { onMounted } from 'vue'
 const userStore = useUserStore()
 // 一进页面开始获取用户信息
 onMounted(() => {
-  console.log(userStore)
+  // console.log(userStore)
   userStore.getUser()
 })
 

@@ -13,7 +13,7 @@ export const useUserStore = defineStore(
     const setToken = t => (token.value = t) // 设置 token
     const getUser = async () => {
       const res = await userGetInfoService() // 请求获取数据
-      console.log('store获取的用户信息', res.data.data)
+      // console.log('store获取的用户信息', res.data.data)
       user.value = res.data.data
     }
     return { token, setToken, getUser, user, setUser }
