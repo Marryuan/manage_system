@@ -5,6 +5,7 @@ import ChannelSelect from '../components/ChannelSelect.vue'
 import { artGetListService } from '@/api/article'
 import { formatTime } from '@/utils/format'
 import ArticleEdit from '../components/ArticleEdit.vue'
+import { artDelService } from '@/api/article'
 
 const articleList = ref([])
 const total = ref(0) // 默认总条数是0
@@ -22,8 +23,15 @@ const onAddArticle = () => {
 }
 
 // 删除
-const onDeleteArticle = row => {
-  console.log(row)
+const onDeleteArticle = async row => {
+  await ElMessageBox.confirm('你确认删除该文章信息吗？', '温馨提示', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+  })
+  await artDelService(row.id)
+  ElMessage({ type: 'success', message: '删除成功' })
+  getArticleList()
 }
 
 // 搜索

@@ -4,10 +4,16 @@ import ChannelSelect from './ChannelSelect.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import { artPublishService } from '@/api/article'
+import { artGetDetailService } from '@/api/article'
+import { artEditService } from '@/api/article'
+
+
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { baseURL } from '@/utils/request'
+import axios from 'axios'
 
 // 控制抽屉的显示隐藏
-const visibleDrawer = ref(false)
+let visibleDrawer = ref(false)
 
 // 默认数据
 const defaultForm = {
@@ -28,10 +34,19 @@ const onUploadFile = uploadFile => {
 let isId = false
 
 const editorRef = ref()
-const open = row => {
+const open = async row => {
   visibleDrawer.value = true
   if (Object.keys(row).length !== 0) {
-    console.log(row)
+    console.log('编辑回显', row.row.id)
+    const res = await artGetDetailService(row.row.id)
+    formModel.value = res.data.data
+    imgUrl.value = baseURL + formModel.value.cover_img
+    // 提交给后台，需要的是 file 格式的，将网络图片，转成 file 格式
+    // 网络图片转成 file 对象, 需要转换一下
+    formModel.value.cover_img = await imageUrlToFile(
+      imgUrl.value,
+      formModel.value.cover_img,
+    )
     isId = true
     console.log('编辑回显')
   } else {
@@ -40,6 +55,27 @@ const open = row => {
     formModel.value = { ...defaultForm }
     imgUrl.value = ''
     editorRef.value.setHTML('')
+  }
+}
+
+async function imageUrlToFile(url, fileName) {
+  try {
+    // 第一步：使用axios获取网络图片数据
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
+    const imageData = response.data
+
+    // 第二步：将图片数据转换为Blob对象
+    const blob = new Blob([imageData], {
+      type: response.headers['content-type'],
+    })
+
+    // 第三步：创建一个新的File对象
+    const file = new File([blob], fileName, { type: blob.type })
+
+    return file
+  } catch (error) {
+    console.error('将图片转换为File对象时发生错误:', error)
+    throw error
   }
 }
 
@@ -56,7 +92,10 @@ const onPublish = async state => {
   }
 
   if (formModel.value.id) {
-    console.log('编辑操作')
+    await artEditService(fd)
+    ElMessage.success('编辑成功')
+    visibleDrawer.value = false
+    emit('success', 'edit')
   } else {
     // 添加请求
     await artPublishService(fd)
