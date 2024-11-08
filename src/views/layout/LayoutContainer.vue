@@ -43,7 +43,7 @@ const onCommand = async command => {
       <div class="el-aside__logo"></div>
       <el-menu
         active-text-color="#ffd04b"
-        background-color="#232323"
+        background-color="#ff63b0"
         :default-active="$route.path"
         text-color="#fff"
         router
@@ -79,9 +79,9 @@ const onCommand = async command => {
     <el-container>
       <el-header>
         <div>
-          江园园在努力：<strong>{{
-            userStore.user.nickname || userStore.user.username
-          }}</strong>
+          <strong
+            >{{ userStore.user.nickname || userStore.user.username }}
+          </strong>
         </div>
         <el-dropdown placement="bottom-end">
           <span class="el-dropdown__box">
@@ -121,13 +121,19 @@ const onCommand = async command => {
 .layout-container {
   height: 100vh;
   .el-aside {
-    background-color: #232323;
+    background-color: #ff63b0; /* 侧边栏背景色 */
     &__logo {
       height: 120px;
       background: url('@/assets/logo.png') no-repeat center / 120px auto;
     }
     .el-menu {
       border-right: none;
+      background-color: #ff63b0; /* 菜单背景色 */
+      .el-menu-item {
+        &:hover {
+          background-color: #ff80c0; /* 菜单项悬浮时的背景色 */
+        }
+      }
     }
   }
   .el-header {
@@ -135,11 +141,12 @@ const onCommand = async command => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 20px;
     .el-dropdown__box {
       display: flex;
       align-items: center;
       .el-icon {
-        color: #999;
+        color: #ff63b0; /* 粉红色的图标 */
         margin-left: 10px;
       }
 
@@ -154,7 +161,11 @@ const onCommand = async command => {
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    color: #666;
+    color: #ff63b0; /* 粉红色的文字 */
+  }
+
+  .el-avatar {
+    border: 2px solid #ff63b0; /* 设置头像的边框为粉红色 */
   }
 }
 </style>
